@@ -1,3 +1,9 @@
+/*
+An MS Windows version
+compiled on Microsoft Visual Studio Community 2019, Version 16.7.6
+16 October 2010
+*/
+
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <stdio.h>
@@ -6,7 +12,7 @@
 
 #define THEPORT "https"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	WSADATA wsaData;
 	int returnVal;
@@ -29,30 +35,26 @@ int main(int argc, char** argv)
 	ZeroMemory(&hint, sizeof hint);
 	hint.ai_family = AF_UNSPEC;
 	hint.ai_socktype = SOCK_STREAM;
-	hint.ai_protocol = IPPROTO_TCP;
-	hint.ai_flags = AI_CANONNAME;
 
 	if ((returnVal = getaddrinfo(argv[1], THEPORT, &hint, &res)) != 0) {
-		fprintf(stderr, "The getaddrinfo() failed with error %s", gai_strerrorA(returnVal));
+		fprintf(stderr, "%s\n", gai_strerrorA(returnVal));
 		WSACleanup();
 		return 2;
 	}
 
 	for (p = res; p != NULL; p = p->ai_next) {
 
-		void* address = &((struct sockaddr_in*)p->ai_addr)->sin_addr;
+		void* address = &((PSOCKADDR_IN)p->ai_addr)->sin_addr;
 		PCHAR version = "IPv4";
 
 		if (p->ai_family == AF_INET6) {
-			address = &((struct sockaddr_in6*)p->ai_addr)->sin6_addr;
+			address = &((PSOCKADDR_IN6)p->ai_addr)->sin6_addr;
 			version = "IPv6";
 		}
 		
 		fprintf(stdout, "%s: %s\n", version,
 			inet_ntop(p->ai_family, address, buffer, INET6_ADDRSTRLEN));
-		fprintf(stdout, "Canon name: %s\n", p->ai_canonname);
 	}
-
 	freeaddrinfo(res);
 	WSACleanup();
 	return 0;
