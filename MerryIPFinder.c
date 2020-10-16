@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	if ((returnVal = getaddrinfo(argv[1], THEPORT, &hint, &res)) != 0) {
 		fprintf(stderr, "%s\n", gai_strerrorA(returnVal));
 		WSACleanup();
-		return 2;
+		return 3;
 	}
 
 	for (p = res; p != NULL; p = p->ai_next) {
